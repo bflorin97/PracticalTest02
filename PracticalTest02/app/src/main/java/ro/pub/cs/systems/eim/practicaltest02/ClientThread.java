@@ -43,13 +43,16 @@ public class ClientThread extends Thread {
 
             String data;
             while ((data = bufferedReader.readLine()) != null) {
-                final String dataParsed = data;
-                textView.post(new Runnable() {
-                   @Override
-                    public void run() {
-                       textView.append(dataParsed);
-                   }
-                });
+                if (data.contains("name")) {
+                    final String dataParsed = data;
+
+                    textView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.append(dataParsed);
+                        }
+                    });
+                }
             }
         } catch (IOException ioException) {
             Log.e(Constants.TAG, "[CLIENT THREAD] An exception has occurred: " + ioException.getMessage());
