@@ -24,7 +24,7 @@ public class PracticalTest02MainActivity extends AppCompatActivity {
                     try {
                         Integer port = Integer.parseInt(serverPort.getText().toString());
                         String prefixValue = prefix.getText().toString();
-                        ServerThread serverThread = new ServerThread(port, prefixValue);
+                        ServerThread serverThread = new ServerThread(port);
                         if (serverThread.getServerSocket() == null) {
                             throw new Exception();
                         }

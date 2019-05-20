@@ -9,12 +9,10 @@ import java.net.Socket;
 public class ServerThread extends Thread {
 
     private int port = 0;
-    private String prefix;
     private ServerSocket serverSocket = null;
 
-    public ServerThread(int port, String prefix) {
+    public ServerThread(int port) {
         this.port = port;
-        this.prefix = prefix;
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (IOException ioException) {
@@ -56,8 +54,8 @@ public class ServerThread extends Thread {
                 Log.i(Constants.TAG, "[SERVER THREAD] Waiting for a client invocation...");
                 Socket socket = serverSocket.accept();
                 Log.i(Constants.TAG, "[SERVER THREAD] A connection request was received from " + socket.getInetAddress() + ":" + socket.getLocalPort());
-//                CommunicationThread communicationThread = new CommunicationThread(this, socket);
-//                communicationThread.start();
+                CommunicationThread communicationThread = new CommunicationThread(this, socket);
+                communicationThread.start();
             }
         } catch (IOException ioException) {
             Log.e(Constants.TAG, "[SERVER THREAD] An exception has occurred: " + ioException.getMessage());
