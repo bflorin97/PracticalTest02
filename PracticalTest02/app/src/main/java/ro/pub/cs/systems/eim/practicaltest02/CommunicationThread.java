@@ -54,83 +54,29 @@ public class CommunicationThread extends Thread {
                 return;
             }
             Log.i(Constants.TAG, "[COMMUNICATION THREAD] Waiting for parameters from client (city / information type!");
-            String city = bufferedReader.readLine();
-            String informationType = bufferedReader.readLine();
-            if (city == null || city.isEmpty() || informationType == null || informationType.isEmpty()) {
-                Log.e(Constants.TAG, "[COMMUNICATION THREAD] Error receiving parameters from client (city / information type!");
-                return;
-            }
+            String prefix = bufferedReader.readLine();
 //            HashMap<String, WeatherForecastInformation> data = serverThread.getData();
 //            WeatherForecastInformation weatherForecastInformation = null;
             if (false) {
             } else {
                 Log.i(Constants.TAG, "[COMMUNICATION THREAD] Getting the information from the webservice...");
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet("http://autocomplete.wunderground.com/aq?query=Brasov");
+                HttpGet httpGet = new HttpGet("http://autocomplete.wunderground.com/aq?query=" + prefix);
 
-
-//                HttpPost httpPost = new HttpPost(Constants.WEB_SERVICE_ADDRESS);
-//                List<NameValuePair> params = new ArrayList<>();
-//                params.add(new BasicNameValuePair(Constants.QUERY_ATTRIBUTE, city));
-//                UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-//                httpPost.setEntity(urlEncodedFormEntity);
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 String pageSourceCode = httpClient.execute(httpGet, responseHandler);
 
                 System.out.println(pageSourceCode);
 
+                PrintWriter writer = Utilities.getWriter(socket);
+                writer.println(pageSourceCode);
+                writer.flush();
 
                 if (pageSourceCode == null) {
                     Log.e(Constants.TAG, "[COMMUNICATION THREAD] Error getting the information from the webservice!");
                     return;
                 }
-//                Document document = Jsoup.parse(pageSourceCode);
-//                Element element = document.child(0);
-//                Elements elements = element.getElementsByTag(Constants.SCRIPT_TAG);
-//                for (Element script : elements) {
-//                    String scriptData = script.data();
-//                    if (scriptData.contains(Constants.SEARCH_KEY)) {
-//                        int position = scriptData.indexOf(Constants.SEARCH_KEY) + Constants.SEARCH_KEY.length();
-//                        scriptData = scriptData.substring(position);
-//                        JSONObject content = new JSONObject(scriptData);
-//                        JSONObject currentObservation = content.getJSONObject(Constants.CURRENT_OBSERVATION);
-//                        String temperature = currentObservation.getString(Constants.TEMPERATURE);
-//                        String windSpeed = currentObservation.getString(Constants.WIND_SPEED);
-//                        String condition = currentObservation.getString(Constants.CONDITION);
-//                        String pressure = currentObservation.getString(Constants.PRESSURE);
-//                        String humidity = currentObservation.getString(Constants.HUMIDITY);
-//                        weatherForecastInformation = new WeatherForecastInformation(
-//                                temperature, windSpeed, condition, pressure, humidity
-//                        );
-//                        serverThread.setData(city, weatherForecastInformation);
-//                        break;
-//                    }
-//                }
             }
-//            String result = null;
-//            switch (informationType) {
-//                case Constants.ALL:
-//                    result = weatherForecastInformation.toString();
-//                    break;
-//                case Constants.TEMPERATURE:
-//                    result = weatherForecastInformation.getTemperature();
-//                    break;
-//                case Constants.WIND_SPEED:
-//                    result = weatherForecastInformation.getWindSpeed();
-//                    break;
-//                case Constants.CONDITION:
-//                    result = weatherForecastInformation.getCondition();
-//                    break;
-//                case Constants.HUMIDITY:
-//                    result = weatherForecastInformation.getHumidity();
-//                    break;
-//                case Constants.PRESSURE:
-//                    result = weatherForecastInformation.getPressure();
-//                    break;
-//                default:
-//                    result = "[COMMUNICATION THREAD] Wrong information type (all / temperature / wind_speed / condition / humidity / pressure)!";
-//            }
-//            printWriter.println(result);
             printWriter.flush();
         } catch (IOException ioException) {
             Log.e(Constants.TAG, "[COMMUNICATION THREAD] An exception has occurred: " + ioException.getMessage());
